@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import PinInputGrid from './PinInputGrid';
+import {validateInput} from './api'
 
 const PIN_LENGTH = 4;
 
@@ -15,9 +16,17 @@ function App() {
     setPin(newPin)
   }
 
+  const validatePin = async () => {
+    console.log(pin.join(''))
+    const result = await validateInput(pin.join(''))
+    console.log(result)
+  }
+
   return (
     <div className="App">
       <PinInputGrid onPinChanged={onPinChanged} pin={pin} pinLength={PIN_LENGTH}  />
+
+      <button onClick={validatePin}>Validate</button>
     </div>
   );
 }

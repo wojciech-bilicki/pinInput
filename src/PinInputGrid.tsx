@@ -1,4 +1,5 @@
 import React, { useRef } from 'react'
+import { StyledPinInput } from './Pin.components';
 
 
 interface PinInputGridProps {
@@ -54,7 +55,7 @@ const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged
   return (
     <div>{
       Array.from({length: pinLength}, (_,index ) => (
-        <input
+        <StyledPinInput
           onKeyDown={(event) => onKeyDown(event, index)}
           key={index}
           ref={el => {
