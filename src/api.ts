@@ -1,7 +1,7 @@
 
 const VALID_PIN = '6666';
 
-export const validateInput = (pinToCheck: string) => new Promise((resolve, reject) => setTimeout(() => {
+export const validateInput = (pinToCheck: string): Promise<string> => new Promise((resolve, reject) => setTimeout(() => {
   if(pinToCheck === VALID_PIN) {
     resolve('Pin is valid')
   } else {

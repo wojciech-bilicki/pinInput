@@ -1,11 +1,14 @@
 import React, { useRef } from 'react'
-import { StyledPinInput } from './Pin.components';
+import { StyledPinInput, ValidationResultParagraph } from './Pin.components';
+import { removeValuesFromArray } from './pin.utils';
 
 
 interface PinInputGridProps {
   pin: Array<number | undefined>;
   onPinChanged: (pinEntry: number | undefined, index: number) => void;
   pinLength: number;
+  validationMessage: string | undefined;
+  validationResult: boolean | undefined;
 }
 
 const PIN_MIN_VALUE = 0;
@@ -13,7 +16,9 @@ const PIN_MAX_VALUE = 9;
 const BACKSPACE_KEY = 'Backspace';
 
 
-const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged}) => {
+
+
+const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged, validationMessage, validationResult}) => {
 
   const inputRefs = useRef<HTMLInputElement[]>([])
 
@@ -24,8 +29,15 @@ const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged
     }
   }
 
+
   const onChange = (event: React.ChangeEvent<HTMLInputElement>, index: number) => {
-    const value = event.target.value;
+    const previousValue = event.target.defaultValue;
+    const valuesArray  = event.target.value.split('');
+    removeValuesFromArray(valuesArray, previousValue)
+    const value = valuesArray.pop()
+    if(!value) {
+      return;
+    }
     const pinNumber = Number(value.trim());
     if(isNaN(pinNumber) || value.length === 0) {
       return 
@@ -52,10 +64,14 @@ const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged
     }
   }
 
+
+
   return (
+    <>
     <div>{
       Array.from({length: pinLength}, (_,index ) => (
         <StyledPinInput
+          isCorrect={validationResult}
           onKeyDown={(event) => onKeyDown(event, index)}
           key={index}
           ref={el => {
@@ -65,6 +81,8 @@ const PinInputGrid: React.FC<PinInputGridProps> = ({pinLength, pin, onPinChanged
         }} onChange={(event) => onChange(event, index)} value={pin[index] || ''}/>
       ) )
       }</div>
+      <ValidationResultParagraph isCorrect={validationResult}>{validationMessage}</ValidationResultParagraph>
+      </>
   )
 }
 
